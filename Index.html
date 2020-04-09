@@ -17,18 +17,15 @@
 						<input class="form-control" placeholder="在此留言">
 					</div>
 					<div class="col-md-3">
-						<button class="btn btn-success">留言送出</button>
+						<button class="btn btn-success" onclick="Message_Write()">留言送出</button>
 					</div>
 				</div>
 			</div>
 		</div>
 		<div class="panel panel-default MT">
 			<div class="panel-body">
-				<div class="row">
-					<div>
-
-					</div>	
-				</div>
+				<table class="table table-bordered table-striped">
+				</table>
 			</div>
 		</div>
 	</div>
@@ -40,27 +37,69 @@
 	}
 	</style>
 <script>
-	function SetSheetRangeReturnAPI(range) {
+	let DataSize;
+	let SheetRange = "Test!A:A";
+	let readoption = "?valueRenderOption=FORMATTED_VALUE";
+	let Url = APIUrl_Get(SheetRange, readoption);
+	function APIUrl_Get(range,option) {
 		let GoogleSheetApi = "https://sheets.googleapis.com/v4/spreadsheets/";
-		let SheetID = "1ZTldkLA36q6eDyjryIywD1AeCUCCc6GpVTz9HpPz1ZE";
-		let SheetOption = "FORMATTED_VALUE";
+		let SheetID = "11vKLRSfnonJEbACRXfSHYPMS3WcFMCSA2YxM_8cV6cY";
 		let API_Key = 'AIzaSyARaYxancFF0CsCSdM5Roxv9nOOXHpN5dc';
-		let str = GoogleSheetApi + SheetID + "/values/" + range + "?valueRenderOption=" + SheetOption + "&key=" + API_Key;
+		let str = GoogleSheetApi + SheetID + "/values/" + range + option + "&key=" + API_Key;
 		return str;
-	}
-	(() => {
-		let SheetRange = "WIKI評分!B2:B15";
-		let url = SetSheetRangeReturnAPI(SheetRange);
-		let data;
+	}		
+	Message_Get=(() => {
 		$.ajax({
-			url: url,                        // url位置
+			url: Url,                        // url位置
 			type: 'GET',                   // post/get
 			error: function (xhr) {
 				alert(xhr.statusText);
 			},// 錯誤後執行的函數
 			success: function (response) {
-				data = response.values;
+				messageBoardShow(response.values);
+				SetDataSize(response.values);
 			}// 成功後要執行的函數
 		});
 	})();
+	function messageBoardShow(values) {
+		let content = '<tbody>';
+		for(let v of values) {
+			let template = `
+			<tr>
+				<td>${v}</td>
+			<tr/>
+			`;
+			content += template;
+		}
+		$('table').html(content);
+	}
+	function SetDataSize(values) {
+		DataSize = values.length;
+	}
+	function Message_Write() {
+		if ($('Input').val() == "") {
+			alert("請輸入留言再發送");
+			return;
+		}
+		let range = "Test!";
+		let col = "A" + DataSize;
+		range += col + ":" + col;
+		let url = APIUrl_Get(range, "?valueInputOption=USER_ENTERED")
+		$.ajax({
+			url: url, // url位置
+			type: "POST",
+			contentType: "application/json;",
+			data: JSON.stringify({
+				"range": range,
+				"majorDimension": "ROWS",
+				"values": [[$('Input').val()]],
+			}),
+			error: function (xhr) {
+				alert(xhr.statusText);
+			},// 錯誤後執行的函數
+			success: function (response) {
+				Message_Get();
+			}// 成功後要執行的函數
+		});
+	}
 </script>
