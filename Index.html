@@ -1,21 +1,66 @@
+﻿<!DOCTYPE html>
 <html>
 <head>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-	</head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.9/angular.min.js"></script>
+</head>
 <body>
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			�d���O����
+	<div class="container">
+		<h2>ystroe留言板測試</h2>
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-md-3">
+						<input class="form-control" placeholder="在此留言">
+					</div>
+					<div class="col-md-3">
+						<button class="btn btn-success">留言送出</button>
+					</div>
+				</div>
+			</div>
 		</div>
-		<div class="panel-body">			
-			123
+		<div class="panel panel-default MT">
+			<div class="panel-body">
+				<div class="row">
+					<div>
+
+					</div>	
+				</div>
+			</div>
 		</div>
 	</div>
 </body>
 </html>
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<style>
+	.MT{
+		margin-top:20px;
+	}
+	</style>
 <script>
-
+	function SetSheetRangeReturnAPI(range) {
+		let GoogleSheetApi = "https://sheets.googleapis.com/v4/spreadsheets/";
+		let SheetID = "1ZTldkLA36q6eDyjryIywD1AeCUCCc6GpVTz9HpPz1ZE";
+		let SheetOption = "FORMATTED_VALUE";
+		let API_Key = 'AIzaSyARaYxancFF0CsCSdM5Roxv9nOOXHpN5dc';
+		let str = GoogleSheetApi + SheetID + "/values/" + range + "?valueRenderOption=" + SheetOption + "&key=" + API_Key;
+		return str;
+	}
+	(() => {
+		let SheetRange = "WIKI評分!B2:B15";
+		let url = SetSheetRangeReturnAPI(SheetRange);
+		let data;
+		$.ajax({
+			url: url,                        // url位置
+			type: 'GET',                   // post/get
+			error: function (xhr) {
+				alert(xhr.statusText);
+			},// 錯誤後執行的函數
+			success: function (response) {
+				data = response.values;
+			}// 成功後要執行的函數
+		});
+	})();
 </script>
