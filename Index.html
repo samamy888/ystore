@@ -48,7 +48,7 @@
 		let str = GoogleSheetApi + SheetID + "/values/" + range + option + "&key=" + API_Key;
 		return str;
 	}		
-	Message_Get=(() => {
+	function Message_Get(){
 		$.ajax({
 			url: Url,                        // url位置
 			type: 'GET',                   // post/get
@@ -60,7 +60,7 @@
 				SetDataSize(response.values);
 			}// 成功後要執行的函數
 		});
-	})();
+	};
 	function messageBoardShow(values) {
 		let content = '<tbody>';
 		for(let v of values) {
@@ -82,24 +82,18 @@
 			return;
 		}
 		let range = "Test!";
-		let col = "A" + DataSize;
-		range += col + ":" + col;
-		let url = APIUrl_Get(range, "?valueInputOption=USER_ENTERED")
+		let sheetUrl = "https://script.google.com/a/9splay.com/macros/s/AKfycbydtNhvrjd5eTXAkipVPWV9OrhPzSSJlRCEyg0/exec?text=" + $('Input').val();
 		$.ajax({
-			url: url, // url位置
-			type: "POST",
-			contentType: "application/json;",
-			data: JSON.stringify({
-				"range": range,
-				"majorDimension": "ROWS",
-				"values": [[$('Input').val()]],
-			}),
+			url: sheetUrl, // url位置
+			type: "Get",
 			error: function (xhr) {
 				alert(xhr.statusText);
 			},// 錯誤後執行的函數
 			success: function (response) {
+				alert(response);
 				Message_Get();
 			}// 成功後要執行的函數
 		});
 	}
+	Message_Get();
 </script>
